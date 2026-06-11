@@ -1,6 +1,6 @@
+import jax.ffi
 from jax.interpreters import mlir, xla
-from jax.lib import xla_client
-from jax import core
+from jax.extend import core
 
 import functools
 
@@ -9,8 +9,11 @@ from jaxsplat._project import lowering, abstract
 
 
 # register GPU XLA custom calls
+# api_version=0 selects XLA's legacy (untyped, opaque-descriptor) custom call
+# API, which matches the void(stream, buffers, opaque, opaque_len) kernel
+# entry points in lib/ops.cu.
 for name, value in _jaxsplat.registrations().items():
-    xla_client.register_custom_call_target(name, value, platform="gpu")
+    jax.ffi.register_ffi_target(name, value, platform="gpu", api_version=0)
 
 
 # forward

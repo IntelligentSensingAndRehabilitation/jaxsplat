@@ -1,10 +1,18 @@
 cmake_minimum_required(VERSION 3.24)
 
 set(CMAKE_CUDA_FLAGS -std=c++17) # must be set before CUDA detection
+
+# Respect an arch list passed via -DCMAKE_CUDA_ARCHITECTURES (e.g. from
+# CMAKE_ARGS in a pip/scikit-build-core build, where no GPU may be visible
+# and `native` silently falls back to nvcc's lowest default arch). Must be
+# decided before project() enables the CUDA language.
+if(NOT DEFINED CMAKE_CUDA_ARCHITECTURES OR CMAKE_CUDA_ARCHITECTURES STREQUAL "")
+    set(CMAKE_CUDA_ARCHITECTURES native)
+endif()
+
 project(_jaxsplat LANGUAGES CXX CUDA)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CUDA_ARCHITECTURES native)
 
 set(PYBIND11_NEWPYTHON ON)
 find_package(pybind11 CONFIG REQUIRED)

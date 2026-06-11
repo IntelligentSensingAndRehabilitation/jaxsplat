@@ -1,6 +1,8 @@
 from jax.interpreters import mlir
 from jax.interpreters.mlir import ir
-from jaxlib.hlo_helpers import custom_call
+# jaxlib.hlo_helpers was removed from jaxlib; the equivalent helper lives in
+# jax's internal mlir module and keeps the same keyword API.
+from jax._src.interpreters.mlir import custom_call
 
 import _jaxsplat
 from jaxsplat._rasterize.abstract import (
